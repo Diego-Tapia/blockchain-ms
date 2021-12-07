@@ -28,7 +28,7 @@ export class HealthService {
 
         const data = {
             uptime: format(process.uptime()),
-            message: 'wallet-ms is running',
+            message: 'blockchain-ms is running',
             date: new Date().toISOString().slice(0, 10),
             status: res.statusCode
         }
