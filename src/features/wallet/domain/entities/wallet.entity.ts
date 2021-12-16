@@ -35,5 +35,14 @@ export class Wallet {
     const { _id, address, privateKey } = model;
     return new Wallet({ id: _id.toString(), address, privateKey, balances });
   }
+
+  public getBalance(tokenId: string) {
+    return this.balances.find((balance) => balance.token.id === tokenId);
+  }
+
+  public hasEnoughFunds(tokenId: string, amount: number) {
+    const balance = this.getBalance(tokenId);
+    return balance && balance.amount >= amount;
+  }
 }
 

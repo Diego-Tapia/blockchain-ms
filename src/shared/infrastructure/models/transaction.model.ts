@@ -30,7 +30,7 @@ export class TransactionModel extends Document {
   @Prop({ type: Types.ObjectId, ref: UserModel.name })
   userId: Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ })
   notes: string;
 
 }

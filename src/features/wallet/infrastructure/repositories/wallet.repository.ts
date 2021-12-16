@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { IWalletModelProps, WalletModel } from 'src/shared/infrastructure/models/wallet.model';
 import { IHelperService } from 'src/shared/infrastructure/services/helper-service/helper-service.interface';
 import { IClientSession } from 'src/shared/infrastructure/services/helper-service/helper.service';
@@ -42,10 +42,10 @@ export class WalletRepository implements IWalletRepository {
     const walletModel = await this.walletModel
       .findById(id)
       .populate('balances.tokenId')
-      //.populate({path: "balances.tokenId", populate: { path: 'clientId' }})
+      .populate({path: "balances.tokenId", populate: { path: 'clientId' }})
       .lean()
       .exec();
-      
+
     return walletModel ? Wallet.toEntity(walletModel as IWalletModelProps) : null;
   }
 
@@ -62,4 +62,12 @@ export class WalletRepository implements IWalletRepository {
     await walletModel.save({ session });
   }
 
+  public async findWallet(filter: FilterQuery<WalletModel>): Promise<Wallet> {
+    const walletModel = await this.walletModel
+      .findOne(filter)
+      .lean()
+      .exec();
+
+    return walletModel ? Wallet.toEntity(walletModel as IWalletModelProps) : null;
+  }
 }

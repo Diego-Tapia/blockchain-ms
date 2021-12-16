@@ -19,7 +19,9 @@ export default registerAs('configs', () => ({
   },
   sqs: {
     url_t: process.env.SQS_T_URL,
+    url_n: process.env.SQS_N_URL,
     accesKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    sqs_endpoint_url: process.env.SQS_ENDPOINT_URL,
   },
 }));

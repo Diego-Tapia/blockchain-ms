@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IBlockchainService } from 'src/configs/blockchain/blockchain-service.interface';
 import { ConfigTypes } from 'src/configs/configs.types';
 import { Transaction } from 'src/features/transaction/domain/entities/transaction.entity';
-import { ITransactionRepository } from 'src/features/transaction/infrastructure/repositories/transaction-repository.interface';
+import { ITransactionRepository } from 'src/features/transaction/infrastructure/repositories/transaction/transaction-repository.interface';
 import { TransactionTypes } from 'src/features/transaction/transaction.types';
 import { IUserRepository } from 'src/features/user_profile/infrastructure/repositories/user-repository.interface';
 import { UserTypes } from 'src/features/user_profile/user.types';
@@ -16,7 +16,7 @@ import { ITokenRepository } from '../../infrastructure/repositories/token-reposi
 import { TokenTypes } from '../../token.types';
 import { IEmitTokenApplication } from './emit-token-app.interface';
 import { IClientSession } from 'src/shared/infrastructure/services/helper-service/helper.service';
-import { ETransactioType } from 'src/features/transaction/domain/enums/transaction-type.enum';
+import { ETransactionTypes } from 'src/features/transaction/domain/enums/transaction-types.enum';
 
 @Injectable()
 export class EmitTokenApplication implements IEmitTokenApplication {
@@ -32,7 +32,7 @@ export class EmitTokenApplication implements IEmitTokenApplication {
     private readonly blockchainService: IBlockchainService,
     @Inject(SharedTypes.INFRASTRUCTURE.HELPER_SERVICE)
     private readonly helperService: IHelperService,
-    @Inject(TransactionTypes.INFRASTRUCTURE.REPOSITORY)
+    @Inject(TransactionTypes.INFRASTRUCTURE.TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
   ) { }
 
@@ -52,26 +52,28 @@ export class EmitTokenApplication implements IEmitTokenApplication {
     //crear token en BLOCKCHAIN
     const hash = await this.blockchainService.createToken(token.bcItemId, amount, walletOfClient);
 
-    //TODO: TRANSACCION POR BLOQUES
+    const name = token.isEmission() ? ETransactionTypes.EMISION : ETransactionTypes.RE_EMISION;
+    const transactionType = await this.transactionRepository.findOneType({ name });
+
     await this.helperService.withTransaction(async (session: IClientSession) => {
-    //si emision   -> crear balances y cambiar estado a emited
-    //si reemision -> incrementa el balance del token a reemitir
-    const operation = token.isEmission() ? this.emitToken.bind(this) : this.reemitToken.bind(this);
-    await operation(token, amount, walletOfClient, session);
+      //si emision   -> crear balances y cambiar estado a emited
+      //si reemision -> incrementa el balance del token a reemitir
+      const operation = token.isEmission() ? this.emitToken.bind(this) : this.reemitToken.bind(this);
+      await operation(token, amount, walletOfClient, session);
 
-    //registra en la coleccion de transacciones la emision/reemision
-    const transaction = new Transaction({
-      hash,
-      transactionType: token.isEmission() ? ETransactioType.EMISION : ETransactioType.RE_EMISION,
-      token,
-      walletFrom: null,
-      walletTo: walletOfClient,
-      amount,
-      user: walletManager.id,
-      notes: 'Emisión de tokens'
-    });
+      //registra en la coleccion de transacciones la emision/reemision
+      const transaction = new Transaction({
+        hash,
+        transactionType: transactionType.id,
+        token,
+        walletFrom: null,
+        walletTo: walletOfClient,
+        amount,
+        user: walletManager.id,
+        notes: 'Emisión de tokens'
+      });
 
-    await this.transactionRepository.create(transaction, session);
+      await this.transactionRepository.create(transaction, session);
     });
   }
 
