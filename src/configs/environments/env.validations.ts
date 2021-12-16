@@ -14,5 +14,6 @@ export default Joi.object({
   AWS_ACCESS_KEY_ID:Joi.string().required(),
   SQS_T_URL: Joi.string().required(),
   SQS_N_URL: Joi.string().required(),
-  SQS_ENDPOINT_URL: Joi.string().required()
+  SQS_ENDPOINT_URL: Joi.string().required(),
+  AWS_REGION: Joi.string().required()
 });

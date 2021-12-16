@@ -10,7 +10,8 @@ export default registerAs('configs', () => ({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     pass: process.env.DB_PASS,
-    port: process.env.DB_PORT
+    port: process.env.DB_PORT,
+    uri: process.env.DB_URI
   },
   blockchain: {
     host: process.env.BLOCKCHAIN_HOST,
@@ -23,5 +24,6 @@ export default registerAs('configs', () => ({
     accesKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     sqs_endpoint_url: process.env.SQS_ENDPOINT_URL,
+    region: process.env.AWS_REGION
   },
 }));

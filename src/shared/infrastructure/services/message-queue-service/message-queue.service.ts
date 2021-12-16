@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import configs from 'src/configs/environments/configs';
 import { ConfigType } from '@nestjs/config';
 
-import { DeleteMessageCommand, Message, ReceiveMessageCommand, ReceiveMessageRequest, SendMessageCommand, SendMessageCommandInput, SQSClient } from '@aws-sdk/client-sqs';
+import { DeleteMessageCommand, Message, ReceiveMessageCommand, SendMessageCommand, SendMessageCommandInput, SQSClient } from '@aws-sdk/client-sqs';
 import { IMessageQueueService } from './message-queue-service.interface';
 
 @Injectable()
@@ -13,17 +13,16 @@ export class MessageQueueService implements IMessageQueueService {
     @Inject(configs.KEY)
     private readonly configService: ConfigType<typeof configs>,
   ) {
-
     const config = {
-      endpoint: process.env.NODE_ENV !== 'production' ? this.configService.sqs.sqs_endpoint_url : undefined,
-      region: process.env.REGION,
+      //endpoint: process.env.NODE_ENV !== 'production' ? this.configService.sqs.sqs_endpoint_url : undefined,
+      region: this.configService.sqs.region,
       credentials: {
         accessKeyId: this.configService.sqs.accesKeyId,
         secretAccessKey: this.configService.sqs.secretAccessKey,
       }
     };
-    this.sqsClient = new SQSClient(config);
 
+    this.sqsClient = new SQSClient(config);
   }
 
   public listenerMessage(queueURL: string, callback: Function) {

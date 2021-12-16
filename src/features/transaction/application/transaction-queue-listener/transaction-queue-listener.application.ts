@@ -1,4 +1,4 @@
-import { Inject, NotImplementedException, OnModuleDestroy } from '@nestjs/common';
+import { Inject, Logger, NotImplementedException, OnModuleDestroy } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import configs from 'src/configs/environments/configs';
 import { IMassiveDecreaseApplication } from 'src/features/transaction/application/massive-decrease/massive-decrease.app.interface';
@@ -51,6 +51,7 @@ export class TransactionQueueListenerApplication implements ITransactionQueueLis
     this.interval = this.messageQueueService.listenerMessage(this.configService.sqs.url_t, async (message: ITransactionQueueMessage) => {
       const transaction = this.transactions[message.transactionType];
       if (!transaction) return new NotImplementedException(`transaccion ${message.transactionType} sin implementar.`);
+      Logger.log(`transacion: ${message}`);
       await transaction.execute(message);
     });
   }
