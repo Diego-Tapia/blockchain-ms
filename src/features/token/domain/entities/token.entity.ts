@@ -77,7 +77,6 @@ export class Token {
   }
 
   public static toEntity(model: ITokenModelProps) {
-    console.log('token model', model)
     const { _id, shortName, description, symbol, price, money,
       status, validFrom, validTo, bcItemId, emited } = model;
 

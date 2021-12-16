@@ -167,4 +167,15 @@ export class BlockchainService implements IBlockchainService {
   private async getTransactionCount(senderAddress: string): Promise<number> {
     return await this.web3.eth.getTransactionCount(senderAddress);
   }
+
+  public async sendTransaction(walletFrom: string, walletTo: string, tokenId: number, amount: number) {
+    // const method = this.smartContractInstance.methods
+    //   .safeTransferFrom(walletFrom, walletTo, tokenId, amount, "0x")
+    //   .encodeABI();
+    //TODO: sin definicion de RSK de momento
+    // signTransaction
+    // sendSignedTransaction
+    const transactionHash: string = this.web3.utils.randomHex(32);
+    return transactionHash;
+  }
 }

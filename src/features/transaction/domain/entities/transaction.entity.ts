@@ -10,7 +10,7 @@ interface ITransactionProps {
   walletTo: Wallet | null;
   amount: number;
   user: string;//definit clase User
-  notes: string;
+  notes?: string;
 }
 export class Transaction {
   id: string | null;
@@ -21,7 +21,7 @@ export class Transaction {
   walletTo: Wallet | null;
   amount: number;
   user: string;
-  notes: string;
+  notes?: string;
   //TODO : MEJORAR ESTA CLASE
 
 

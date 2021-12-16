@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TokenController } from 'src/api/token/token.controller';
 import { BlockchainServiceProvider } from 'src/configs/blockchain/blockchain.provider';
-import { TransactionModule } from '../transaction/transaction.module';
-import { UserRepositoryProvider } from '../user_profile/infrastructure/repositories/user-repository.provider';
+import { TransactionFeatureModule } from '../transaction/transaction.module';
 import { UserFeatureModule } from '../user_profile/user.module';
 import { WalletFeatureModule } from '../wallet/wallet.module';
 import { CreateTokenApplicationProvider } from './application/create-token/create-token.provider';
@@ -13,7 +12,11 @@ import { TokenRepositoryProvider } from './infrastructure/repositories/token-rep
 
 @Module({
   controllers: [TokenController],
-  imports: [UserFeatureModule, WalletFeatureModule, TransactionModule],
+  imports: [
+    UserFeatureModule, 
+    WalletFeatureModule, 
+    TransactionFeatureModule
+  ],
   providers: [
     TokenRepositoryProvider,
     CreateTokenApplicationProvider,
@@ -22,5 +25,6 @@ import { TokenRepositoryProvider } from './infrastructure/repositories/token-rep
     BlockchainServiceProvider,
     EmitTokenApplicationProvider
   ],
+  exports: [TokenRepositoryProvider]
 })
 export class TokenFeatureModule { }

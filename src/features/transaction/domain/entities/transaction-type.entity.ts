@@ -1,4 +1,3 @@
-
 interface ITransationTypeProps {
   id: string;
   name: string;
