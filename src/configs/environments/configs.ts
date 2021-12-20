@@ -3,14 +3,9 @@ import { registerAs } from '@nestjs/config';
 export default registerAs('configs', () => ({
   app: {
     port: process.env.PORT,
+    env: process.env.ENVIRONMENT
   },
   database: {
-    engine: process.env.DB_ENGINE,
-    name: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    pass: process.env.DB_PASS,
-    port: process.env.DB_PORT,
     uri: process.env.DB_URI
   },
   blockchain: {

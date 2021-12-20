@@ -14,7 +14,7 @@ export class MessageQueueService implements IMessageQueueService {
     private readonly configService: ConfigType<typeof configs>,
   ) {
     const config = {
-      //endpoint: process.env.NODE_ENV !== 'production' ? this.configService.sqs.sqs_endpoint_url : undefined,
+      endpoint: this.configService.app.env === 'localhost' ? this.configService.sqs.sqs_endpoint_url : undefined,
       region: this.configService.sqs.region,
       credentials: {
         accessKeyId: this.configService.sqs.accesKeyId,

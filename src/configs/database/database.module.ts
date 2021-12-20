@@ -9,9 +9,9 @@ import configs from '../environments/configs';
   imports: [
     MongooseModule.forRootAsync({
       useFactory: (configService: ConfigType<typeof configs>): MongooseModuleOptions => {
-        const { engine, name, host, user, pass, port, uri } = configService.database;
+        const {  uri } = configService.database;
         return {
-          uri: uri
+          uri
         };
       },
       inject: [configs.KEY],
