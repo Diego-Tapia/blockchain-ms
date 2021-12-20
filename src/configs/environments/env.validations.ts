@@ -2,11 +2,7 @@ import * as Joi from 'joi';
 
 export default Joi.object({
   PORT: Joi.number().required(),
-  DB_ENGINE: Joi.string().required(),
-  DB_NAME: Joi.string().required(),
-  DB_HOST: Joi.string().required(),
-  DB_USER: Joi.string().required(),
-  DB_PASS: Joi.string().required(),
+  DB_URI: Joi.string().required(),
   BLOCKCHAIN_HOST: Joi.string().required(),
   BLOCKCHAIN_CONTRACT_ADDRESS: Joi.string().required(),
   ENCRYPT_PASS: Joi.string().min(256).required(),
