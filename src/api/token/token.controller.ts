@@ -4,6 +4,7 @@ import { ICreateTokenApplication } from 'src/features/token/application/create-t
 import { IEmitTokenApplication } from 'src/features/token/application/emit-token/emit-token-app.interface';
 import { IGetAllTokensApplication } from 'src/features/token/application/get-all-tokens/get-all-tokens-app.interface';
 import { IGetTokenByIdApplication } from 'src/features/token/application/get-token-by-id/get-token-by-id-app.interface';
+import { EmitTokenDTO } from 'src/features/token/infrastructure/dtos/emit-token.dto';
 import { TokenTypes } from 'src/features/token/token.types';
 import { CreateTokenDto } from '../../features/token/infrastructure/dtos/create-token.dto';
 
@@ -29,9 +30,9 @@ export class TokenController {
   @Post(':id/emit')
   emit(
     @Param('id') id: string,
-    @Body('amount', ParseIntPipe) amount: number
+    @Body() emitToken: EmitTokenDTO,
   ) {
-    return this.emitTokenApplication.execute(id, amount);
+    return this.emitTokenApplication.execute(id,emitToken);
   }
 
   @Get()

@@ -17,6 +17,9 @@ import { TokenTypes } from '../../token.types';
 import { IEmitTokenApplication } from './emit-token-app.interface';
 import { IClientSession } from 'src/shared/infrastructure/services/helper-service/helper.service';
 import { ETransactionTypes } from 'src/features/transaction/domain/enums/transaction-types.enum';
+import { EmitTokenDTO } from '../../infrastructure/dtos/emit-token.dto';
+import { IWalletsByClientsRepository } from 'src/features/wallestByClients/infrastructure/repositories/walletsByClients-repository.interface';
+import { WalletsByClientsTypes } from 'src/features/wallestByClients/walletsByClients.types';
 
 @Injectable()
 export class EmitTokenApplication implements IEmitTokenApplication {
@@ -34,19 +37,22 @@ export class EmitTokenApplication implements IEmitTokenApplication {
     private readonly helperService: IHelperService,
     @Inject(TransactionTypes.INFRASTRUCTURE.TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
+    @Inject(WalletsByClientsTypes.INFRASTRUCTURE.REPOSITORY)
+    private readonly walletByClientRepository: IWalletsByClientsRepository
   ) { }
 
 
-  async execute(id: string, amount: number) {
+  async execute(id:string,emitToken: EmitTokenDTO) {
+    const {amount,idAdmin} = emitToken
     //buscar token por id
     const token = await this.tokenRepository.findById(id);
     if (!token) throw new NotFoundException("Token no encontrado.");
 
     //buscar usuario ficticio creado junto con cliente que puede emitir y recaudar tokens
     const clientId = this.helperService.toObjectId(token.client.id);
-    const walletManager = await this.userRepository.findUser({ clientId, isWalletManager: true });
-
-    const walletOfClient = await this.walletRepository.findById(walletManager.walletId);
+    const walletClientId = await this.walletByClientRepository.findOne({ clientId })
+    if (!walletClientId) throw new NotFoundException("Wallet id de cliente no encontrada.");
+    const walletOfClient = await this.walletRepository.findById(walletClientId.walletId);
     if (!walletOfClient) throw new NotFoundException("Wallet de cliente no encontrada.");
 
     //crear token en BLOCKCHAIN
@@ -69,7 +75,7 @@ export class EmitTokenApplication implements IEmitTokenApplication {
         walletFrom: null,
         walletTo: walletOfClient,
         amount,
-        user: walletManager.id,
+        user: idAdmin,
         notes: 'Emisión de tokens'
       });
 
