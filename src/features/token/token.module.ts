@@ -3,6 +3,7 @@ import { TokenController } from 'src/api/token/token.controller';
 import { BlockchainServiceProvider } from 'src/configs/blockchain/blockchain.provider';
 import { TransactionFeatureModule } from '../transaction/transaction.module';
 import { UserFeatureModule } from '../user_profile/user.module';
+import { WalletsByClientsFeatureModule } from '../wallestByClients/walletsByClients.module';
 import { WalletFeatureModule } from '../wallet/wallet.module';
 import { CreateTokenApplicationProvider } from './application/create-token/create-token.provider';
 import { EmitTokenApplicationProvider } from './application/emit-token/emit-token.provider';
@@ -15,7 +16,8 @@ import { TokenRepositoryProvider } from './infrastructure/repositories/token-rep
   imports: [
     UserFeatureModule, 
     WalletFeatureModule, 
-    TransactionFeatureModule
+    TransactionFeatureModule,
+    WalletsByClientsFeatureModule
   ],
   providers: [
     TokenRepositoryProvider,
