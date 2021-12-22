@@ -31,5 +31,4 @@ import { SharedModule } from './shared/shared.module';
   controllers: [],
   providers: [],
 })
-
 export class AppModule {}
