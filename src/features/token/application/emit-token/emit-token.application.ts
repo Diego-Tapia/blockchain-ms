@@ -49,8 +49,7 @@ export class EmitTokenApplication implements IEmitTokenApplication {
     if (!token) throw new NotFoundException("Token no encontrado.");
 
     //buscar usuario ficticio creado junto con cliente que puede emitir y recaudar tokens
-    const clientId = this.helperService.toObjectId(token.client.id);
-    const walletClientId = await this.walletByClientRepository.findOne({ clientId })
+    const walletClientId = await this.walletByClientRepository.findOne({ clientId: token.client.id })
     if (!walletClientId) throw new NotFoundException("Wallet id de cliente no encontrada.");
     const walletOfClient = await this.walletRepository.findById(walletClientId.walletId);
     if (!walletOfClient) throw new NotFoundException("Wallet de cliente no encontrada.");
