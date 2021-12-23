@@ -14,6 +14,7 @@ import { UserModel, UserSchema } from './infrastructure/models/user.model';
 import { WalletModel, WalletSchema } from './infrastructure/models/wallet.model';
 import { HelperServiceProvider } from './infrastructure/services/helper-service/helper-service.provider';
 import { MessageQueueServiceProvider } from './infrastructure/services/message-queue-service/message-queue-listener.provider';
+import { PromiseQueueServiceProvider } from './infrastructure/services/promise-queue/promise-queue.provider';
 
 @Global()
 @Module({
@@ -33,7 +34,16 @@ import { MessageQueueServiceProvider } from './infrastructure/services/message-q
       { name: MassiveIncreaseModel.name, schema: MassiveIncreaseSchema },
     ])
   ],
-  providers: [HelperServiceProvider, MessageQueueServiceProvider],
-  exports: [MongooseModule, HelperServiceProvider, MessageQueueServiceProvider]
+  providers: [
+    HelperServiceProvider, 
+    MessageQueueServiceProvider,
+    PromiseQueueServiceProvider
+  ],
+  exports: [
+    MongooseModule, 
+    HelperServiceProvider, 
+    MessageQueueServiceProvider,
+    PromiseQueueServiceProvider
+  ]
 })
 export class SharedModule { }

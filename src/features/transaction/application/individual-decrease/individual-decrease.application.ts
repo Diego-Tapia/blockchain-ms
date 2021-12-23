@@ -78,8 +78,8 @@ export class IndividualDecreaseApplication implements IIndividualDecreaseApplica
         hash,
         transactionType: transactionType.id,
         token,
-        walletFrom: walletOfClient,
-        walletTo: walletOfUser,
+        walletFrom: walletOfUser,
+        walletTo: walletOfClient,
         amount,
         user: userId,
         notes

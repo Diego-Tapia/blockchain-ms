@@ -12,10 +12,13 @@ import { TransactionTypes } from '../../transaction.types';
 import { IIndividualIncreaseApplication } from '../individual-increase/individual-increase-app.interface';
 import { ITransferApplication } from '../transfer/transfer-app.interface';
 import { IIndividualDecreaseApplication } from '../individual-decrease/individual-decrease-app.interface';
+import { IPromiseQueueService } from 'src/shared/infrastructure/services/promise-queue/promise-queue.interface';
+import { MutexInterface } from 'async-mutex';
 
 export class TransactionQueueListenerApplication implements ITransactionQueueListenerApplication, OnModuleDestroy {
   private readonly transactions;
   private interval;
+  private mutex: MutexInterface;
 
   constructor(
     @Inject(SharedTypes.INFRASTRUCTURE.MESSAGE_QUEUE_SERVICE)
@@ -32,6 +35,8 @@ export class TransactionQueueListenerApplication implements ITransactionQueueLis
     private readonly transferApplication: ITransferApplication,
     @Inject(TransactionTypes.APPLICATION.INDIVIDUAL_DECREASE)
     private readonly individualDecreaseApplication: IIndividualDecreaseApplication,
+    @Inject(SharedTypes.INFRASTRUCTURE.PROMISE_QUEUE_SERVICE)
+    private readonly promiseQueueService: IPromiseQueueService
   ) {
     this.transactions = {
       [ETransactionTypes.INDIVIDUAL_INCREASE]: this.individualIncreaseApplication,
@@ -40,6 +45,7 @@ export class TransactionQueueListenerApplication implements ITransactionQueueLis
       [ETransactionTypes.MASSIVE_DECREMENT]: this.massiveDecreaseApplication,
       [ETransactionTypes.TRANSFER]: this.transferApplication
     };
+    this.mutex = this.promiseQueueService.getInstance();
     this.execute();
   }
 
@@ -52,8 +58,12 @@ export class TransactionQueueListenerApplication implements ITransactionQueueLis
       const transaction = this.transactions[message.transactionType];
       if (!transaction) return new NotImplementedException(`transaccion ${message.transactionType} sin implementar.`);
       Logger.log(`transacion: ${message}`);
-      await transaction.execute(message);
+      this.promiseQueueService.run(
+        this.mutex,
+        async () => await transaction.execute(message)
+      )
     });
   }
+
 }
 
