@@ -48,11 +48,8 @@ export class EmitTokenApplication implements IEmitTokenApplication {
     const token = await this.tokenRepository.findById(id);
     if (!token) throw new NotFoundException("Token no encontrado.");
     
-    console.log(token.client.id);
-    console.log(typeof token.client.id);
     const walletClientId = await this.walletByClientRepository.findOne({ clientId: token.client.id })
     console.log("walletClientEmision: ",walletClientId);
-    if (!walletClientId) throw new NotFoundException("Wallet id de cliente no encontrada.");
     const walletOfClient = await this.walletRepository.findById(walletClientId.walletId);
 
     //crear token en BLOCKCHAIN
